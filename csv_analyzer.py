@@ -33,6 +33,22 @@ def analyze_all(dir, log_file):
     print(permission_re_list)
 
 
+def analyze_one(dir, log_file):
+    global component_hijack_num, permission_re_num, use_pi_num, intent_num, notificaiton_num, component_hijack_list, permission_re_list
+    count = 0
+    for d in os.listdir(dir):
+        if d.endswith("_analyze"):
+            count += 1
+            wholepath = dir + "/" + d
+            analyzeCSVinDir3(wholepath, log_file)
+    print("############################################################################################")
+    if len(component_hijack_list) > 0:
+        print("this app has component hijack risk! For more information, please look at PendingIntentHasVul.txt and result.csv.")
+    elif len(permission_re_list) > 0:
+        print("this app has permission re-delegation risk! For more information, please look at PendingIntentHasVul.txt and result.csv.")
+    else:
+        print("this app has no PendingIntent vul!")
+
 
 
 def analyzeCSVinDir3(analyze_dir, log_file):

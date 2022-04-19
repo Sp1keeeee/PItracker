@@ -638,6 +638,7 @@ def entry():
     if dir is not None and apk is not None:
         parser.print_help()
         return
+    #analyze apps in dir
     if dir is not None:
         if "\\" in dir:
             dir = dir.replace("\\", "/")
@@ -650,31 +651,31 @@ def entry():
             csv_analyzer.analyze_all(out_put, logfile)
         else:
             analyzeApkdir(dir, workpath=work_path, remove_smali=remove_smali)
-            logfile = dir + "/prlog.txt"
+            logfile = dir + "/PendingIntentHasVul.txt"
             if not os.path.exists(logfile):
                 f = open(logfile, 'w')
                 f.close()
             csv_analyzer.analyze_all(dir, logfile)
         return
+    #analyze an app
     else:
         if "\\" in apk:
             apk = apk.replace("\\", "/")
         if out_put is not None:
-            #F:\apks\lenovonew\AutoRegistrationCn247.apk
             analyzeAPK(apk, apkoutpath=out_put, workpath=work_path, removeSmali=remove_smali)
-            logfile = out_put + "/prlog.txt"
+            logfile = out_put + "/" +apk.rpartition("/")[2].rpartition(".")[0] + "_analyze" + "/PendingIntentHasVul.txt"
             if not os.path.exists(logfile):
                 f = open(logfile, 'w')
                 f.close()
-            csv_analyzer.analyze_all(out_put, logfile)
+            csv_analyzer.analyze_one(out_put, logfile)
         else:
             analyzeAPK(apk, workpath=work_path,removeSmali=remove_smali)
             analyzedir = apk.rpartition("/")[0]
-            logfile = analyzedir + "/prlog.txt"
+            logfile = analyzedir + "/" +apk.rpartition("/")[2].rpartition(".")[0] + "_analyze" + "/PendingIntentHasVul.txt"
             if not os.path.exists(logfile):
                 f = open(logfile, 'w')
                 f.close()
-            csv_analyzer.analyze_all(analyzedir, logfile)
+            csv_analyzer.analyze_one(analyzedir, logfile)
         return
 
 
