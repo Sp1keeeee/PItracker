@@ -73,7 +73,7 @@ def proccess_dict(pi_dict, log_store_path, log_path, count):
             print("file is :" + key)
             print("line is :" + value)
             print("pi cons content is" + content[pi_cons_line - 1])
-            if "fof.smali" in key and "1943" in value:
+            if "VideoFloatWindowService.smali" in key and "241" in value:
                 print("hi")
             register = findBase.get_x_register(content[pi_cons_line - 1], 3)
             up_boundary, down_boundary, method_info = find_boundary(content, pi_cons_line)

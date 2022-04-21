@@ -9,6 +9,7 @@ import time
 import csv_analyzer
 import shutil
 import argparse
+import traceback
 sys.setrecursionlimit(10000000)
 
 
@@ -47,12 +48,14 @@ def analyzeAPK(apk_path, removeSmali=True, diroutpath=None, apkoutpath=None, wor
     resultFile = apk_analyze_dir + "/result.txt"
     forward_log = apk_analyze_dir + "/forwardlog.txt"
     noPIlog = apk_analyze_dir + "/noPIlog.txt"
+    hasvultxt = apk_analyze_dir + "/PendingIntentHasVul.txt"
 
 
 
     if not os.path.exists(apk_analyze_dir):
         os.mkdir(apk_analyze_dir)
-    else:
+
+    if  os.path.exists(hasvultxt):
         print(apk_name + " has already been analyzed!")
         print("-----------------------------------------------------------------")
         return
@@ -587,8 +590,12 @@ def findGoTo(forward_content, forward_check_line):
 
 def analyzeApkdir(apkdir,outdir=None, workpath =None, remove_smali = True):
     times = []
+    logfile = None
+    if outdir.endswith("/"):
+        logfile = outdir + "wronglogfile.txt"
+    else:
+        logfile = outdir + "/wronglogfile.txt"
     for apk in os.listdir(apkdir):
-
         if apk.endswith(".apk"):
             start = time.time()
             pi_from_getActivity.clear()
@@ -600,6 +607,11 @@ def analyzeApkdir(apkdir,outdir=None, workpath =None, remove_smali = True):
                 analyzeAPK(apk_path, diroutpath=outdir,workpath=workpath, removeSmali=remove_smali)
             except:
                 print("apk " + apk_path + " has sth wrong\n")
+                with open(logfile, 'a') as out:
+                    out.write("apk " + apk_path + " has sth wrong\n")
+                    out.write(traceback.format_exc())
+                    out.write("\n")
+                    continue
                 continue
             end = time.time()
             times.append(end - start)
@@ -631,7 +643,6 @@ def entry():
         if romove == 'n':
             remove_smali = False
 
-
     if (dir is None) and (apk is None):
         parser.print_help()
         return
@@ -644,7 +655,7 @@ def entry():
             dir = dir.replace("\\", "/")
         if out_put is not None:
             analyzeApkdir(dir, out_put, workpath=work_path, remove_smali=remove_smali)
-            logfile = out_put + "/log.txt"
+            logfile = out_put + "/hasPIVullog.txt"
             if not os.path.exists(logfile):
                 f = open(logfile, 'w')
                 f.close()
@@ -684,7 +695,10 @@ def entry():
 
 if __name__ == '__main__':
 
-
+    start = time.time()
     entry()
+    end = time.time()
+    print("total use:")
+    print(end - start)
 
 
