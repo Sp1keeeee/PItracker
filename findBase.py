@@ -296,7 +296,11 @@ def find_base_intent(source_function_file, source_function_function, mode, out, 
 
         # find the register
         check_line = down_boundary - 1
-        check_line_content = source_content[check_line - 1]
+
+        i = 0
+        while backward.check_exist(check_line_content, "return-object") is False and i < check_line:
+            check_line_content = source_content[check_line - i]
+            i = i + 1
         intent_register_match = re.search(r"return-object\s(.*?)\n", check_line_content)
         if intent_register_match == None:
             print("WTFFFFFFFFFFFFFFFFFFFFFFF")
@@ -334,6 +338,16 @@ def find_base_intent(source_function_file, source_function_function, mode, out, 
                     rtn_content = source_content[check_line - 3]  # the method
                     if ".catch" in rtn_content:
                         rtn_content = source_content[check_line - 5]
+                    elif ".line" in rtn_content:
+                        j = 0
+                        while backward.check_exist(rtn_content, "invoke") is False and j < check_line:
+                            rtn_content = source_content[check_line - j]
+                            j = j + 1
+                        if j == check_line:
+                            out.write("can't find base intent maybe in the SDK\n")
+                            out.write(
+                                "##############################################################################\n")
+                            return
                         ############################################################## check deep
                     actually = deep_check(rtn_content)
                     if actually:
