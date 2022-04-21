@@ -50,12 +50,9 @@ def analyzeAPK(apk_path, removeSmali=True, diroutpath=None, apkoutpath=None, wor
     noPIlog = apk_analyze_dir + "/noPIlog.txt"
     hasvultxt = apk_analyze_dir + "/PendingIntentHasVul.txt"
 
-
-
     if not os.path.exists(apk_analyze_dir):
         os.mkdir(apk_analyze_dir)
-
-    if  os.path.exists(hasvultxt):
+    else:
         print(apk_name + " has already been analyzed!")
         print("-----------------------------------------------------------------")
         return
