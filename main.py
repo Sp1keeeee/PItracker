@@ -696,6 +696,6 @@ if __name__ == '__main__':
     entry()
     end = time.time()
     print("total use:")
-    print(end - start)
+    print(str(end - start) + " s")
 
 
